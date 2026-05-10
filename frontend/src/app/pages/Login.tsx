@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
-import { Plane, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { Plane, Mail, Lock, ArrowRight, Mountain, User as UserIcon } from 'lucide-react';
 import { ApiError } from '../api/client';
 import { login, signup } from '../api/auth';
 
@@ -24,7 +24,7 @@ export function Login() {
       } else {
         await login(email, password);
       }
-      navigate('/');
+      navigate('/app');
     } catch (err) {
       if (err instanceof ApiError) setError(err.message);
       else setError('Something went wrong. Please try again.');
@@ -34,125 +34,190 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#2563EB] via-[#06B6D4] to-[#38BDF8] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-300/10 rounded-full blur-3xl animate-pulse delay-700" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <div className="min-h-screen relative flex items-center justify-center lg:justify-between overflow-hidden px-4 lg:px-24">
+      {/* Background Image - Using the generated enchanted grotto image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/assets/images/login-bg.png"
+          alt="Enchanted Oasis Background"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            // Fallback to a stunning Unsplash high-res image if the local one isn't served properly
+            e.currentTarget.src = 'https://images.unsplash.com/photo-1542224566-6e85f2e6772f?auto=format&fit=crop&w=1920&q=80';
+          }}
+        />
+        {/* Subtle overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-black/40" />
+        {/* Vignette effect */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-transparent to-black/60" />
+      </div>
+
+      {/* Left Text (Desktop only) */}
+      <div className="hidden lg:flex relative z-10 flex-col max-w-2xl mt-[-10vh]">
+        <h1 className="text-[5rem] font-black text-white leading-[1.1] drop-shadow-2xl font-serif">
+          DISCOVER <br />
+          <span className="text-emerald-400">PARADISE</span> <br />
+          WITH TRAVELOOP
+        </h1>
+        <p className="text-white/90 text-2xl mt-8 font-medium max-w-lg drop-shadow-lg leading-relaxed">
+          Unlock hidden wonders and plan unforgettable journeys to the world's most breathtaking destinations.
+        </p>
       </div>
 
       {/* Login Card */}
-      <div className="relative z-10 w-full max-w-md">
-        {/* Logo Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-2xl shadow-white/20 mb-4">
-            <Plane className="w-8 h-8 text-[#2563EB] transform -rotate-45" />
+      <div className="relative z-10 w-full max-w-[460px] animate-fade-in-up">
+        <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.5)] p-10 lg:p-12 border border-white/20">
+          
+          {/* Logo Section */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[1.5rem] flex items-center justify-center mb-5 shadow-xl shadow-emerald-500/30 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+              <Mountain className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">
+              {isSignup ? 'Join The Journey' : 'Welcome Back'}
+            </h2>
+            <p className="text-slate-500 font-medium mt-2">
+              {isSignup ? 'Create your account to start planning.' : 'Login to access your itineraries.'}
+            </p>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Traveloop</h1>
-          <p className="text-white/80 text-sm flex items-center justify-center gap-1">
-            <Sparkles className="w-4 h-4" />
-            Your adventure starts here
-          </p>
-        </div>
-
-        {/* Form Card */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8">
-          <h2 className="text-2xl font-bold text-[#0F172A] mb-2">
-            {isSignup ? 'Create Account' : 'Welcome Back'}
-          </h2>
-          <p className="text-gray-600 mb-6">
-            {isSignup ? 'Start planning your dream trips' : 'Sign in to continue your journey'}
-          </p>
 
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 font-bold flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Social Login Placeholder */}
+          {!isSignup && (
+            <>
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-3 py-3.5 bg-white border-2 border-slate-100 rounded-xl hover:border-emerald-500 hover:bg-emerald-50 transition-all font-bold text-slate-700 mb-6 shadow-sm group"
+              >
+                <img src="https://www.google.com/favicon.ico" className="w-5 h-5 group-hover:scale-110 transition-transform" alt="Google" />
+                Continue with Google
+              </button>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px bg-slate-200 flex-1" />
+                <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">or email</span>
+                <div className="h-px bg-slate-200 flex-1" />
+              </div>
+            </>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             {isSignup && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                <input
-                  type="text"
-                  placeholder="John Doe"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent outline-none transition-all"
-                />
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                <div className="relative group">
+                  <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                  <input
+                    type="text"
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-xl text-slate-800 focus:ring-0 focus:border-emerald-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-medium"
+                    required
+                  />
+                </div>
               </div>
             )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
                 <input
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent outline-none transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-xl text-slate-800 focus:ring-0 focus:border-emerald-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-medium"
+                  required
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Password</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
                 <input
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent outline-none transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-xl text-slate-800 focus:ring-0 focus:border-emerald-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-medium"
+                  required
                 />
               </div>
             </div>
 
-            {!isSignup && (
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB]" />
-                  <span className="text-gray-600">Remember me</span>
-                </label>
-                <a href="#" className="text-[#2563EB] hover:text-[#06B6D4] transition-colors">
-                  Forgot password?
-                </a>
-              </div>
-            )}
+            <div className="flex items-center justify-between text-sm py-2">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <div className="relative flex items-center justify-center w-5 h-5 border-2 border-slate-300 rounded overflow-hidden group-hover:border-emerald-500 transition-colors">
+                  <input type="checkbox" className="peer absolute opacity-0 w-full h-full cursor-pointer" />
+                  <div className="absolute inset-0 bg-emerald-500 opacity-0 peer-checked:opacity-100 transition-opacity flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                </div>
+                <span className="text-slate-600 font-bold group-hover:text-slate-900 transition-colors">Remember me</span>
+              </label>
+              <a href="#" className="text-emerald-600 hover:text-emerald-700 font-bold transition-colors">
+                Forgot Password?
+              </a>
+            </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2563EB] to-[#06B6D4] text-white py-3 rounded-lg font-medium shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 group"
+              className="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white py-4 rounded-xl font-black text-lg tracking-wide shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 overflow-hidden relative group"
             >
-              <span>{loading ? 'Please wait…' : isSignup ? 'Create Account' : 'Sign In'}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1s_infinite]" />
+              <span className="relative">{loading ? 'Processing...' : isSignup ? 'SIGN UP NOW' : 'SECURE LOGIN'}</span>
+              {!loading && <ArrowRight className="w-5 h-5 relative" />}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="mt-8 text-center bg-slate-50/50 rounded-xl p-4 border border-slate-100">
+            <p className="text-slate-600 text-sm font-medium">
               {isSignup ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
                 onClick={() => setIsSignup(!isSignup)}
-                className="text-[#2563EB] hover:text-[#06B6D4] font-medium transition-colors"
+                className="text-emerald-600 hover:text-emerald-700 font-black transition-colors uppercase tracking-wider text-xs ml-1"
               >
-                {isSignup ? 'Sign In' : 'Sign Up'}
+                {isSignup ? 'Sign In Instead' : 'Create New Account'}
               </button>
             </p>
           </div>
+
+          {/* Admin Link */}
+          <div className="mt-6 text-center">
+             <Link to="/admin-login" className="text-xs text-slate-400 hover:text-emerald-600 font-bold transition-colors uppercase tracking-widest">
+               Admin Portal
+             </Link>
+          </div>
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-white/60 text-xs mt-6">
-          By continuing, you agree to our Terms of Service and Privacy Policy
-        </p>
+        {/* Footer info */}
+        <div className="mt-8 text-white/70 text-sm font-medium text-center drop-shadow-md">
+          © 2025 Traveloop™. Your adventure awaits.
+        </div>
       </div>
+
+      <style>{`
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

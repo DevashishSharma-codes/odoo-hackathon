@@ -54,7 +54,7 @@ export function Dashboard() {
             Explore dream destinations, plan detailed itineraries, and make unforgettable memories.
           </p>
           <Link
-            to="/create-trip"
+            to="/app/create-trip"
             className="inline-flex items-center gap-2 bg-white text-[#2563EB] px-6 py-3 rounded-xl font-medium shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
           >
             <Plus className="w-5 h-5" />
@@ -88,7 +88,7 @@ export function Dashboard() {
             <p className="text-gray-600 text-sm">Continue planning your adventures</p>
           </div>
           <Link
-            to="/my-trips"
+            to="/app/my-trips"
             className="text-[#2563EB] hover:text-[#06B6D4] font-medium text-sm flex items-center gap-1 group"
           >
             View All
@@ -100,7 +100,7 @@ export function Dashboard() {
           {upcomingTrips.map((trip) => (
             <Link
               key={trip.id}
-              to={`/trip/${trip.id}/view`}
+              to={`/app/trip/${trip.id}/view`}
               className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-[1.02]"
             >
               <div className="relative h-48 overflow-hidden">
@@ -169,7 +169,7 @@ export function Dashboard() {
             <p className="text-gray-600 text-sm">Explore trending travel spots</p>
           </div>
           <Link
-            to="/cities"
+            to="/app/cities"
             className="text-[#2563EB] hover:text-[#06B6D4] font-medium text-sm flex items-center gap-1 group"
           >
             Explore More
@@ -181,7 +181,7 @@ export function Dashboard() {
           {popularDestinations.map((dest) => (
             <Link
               key={dest.name}
-              to="/cities"
+              to="/app/cities"
               className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105"
             >
               <div className="relative h-40 overflow-hidden">

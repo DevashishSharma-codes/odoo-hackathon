@@ -38,7 +38,7 @@ export function ItineraryBuilder() {
             <p className="text-gray-600">Add cities and plan activities for each stop</p>
           </div>
           <Link
-            to={`/trip/${tripId}/view`}
+            to={`/app/trip/${tripId}/view`}
             className="px-6 py-3 bg-gradient-to-r from-[#2563EB] to-[#06B6D4] text-white rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
           >
             Preview Timeline

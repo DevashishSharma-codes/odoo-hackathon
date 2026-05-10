@@ -1,7 +1,9 @@
 import { createBrowserRouter } from 'react-router';
 import { Layout } from './components/Layout';
 import { RequireAuth } from './components/RequireAuth';
+import { Landing } from './pages/Landing';
 import { Login } from './pages/Login';
+import { AdminLogin } from './pages/AdminLogin';
 import { Dashboard } from './pages/Dashboard';
 import { CreateTrip } from './pages/CreateTrip';
 import { MyTrips } from './pages/MyTrips';
@@ -18,14 +20,22 @@ import { PublicTrip } from './pages/PublicTrip';
 
 export const router = createBrowserRouter([
   {
+    path: '/',
+    Component: Landing,
+  },
+  {
     path: '/login',
     Component: Login,
+  },
+  {
+    path: '/admin-login',
+    Component: AdminLogin,
   },
   {
     Component: RequireAuth,
     children: [
       {
-        path: '/',
+        path: '/app',
         Component: Layout,
         children: [
           { index: true, Component: Dashboard },

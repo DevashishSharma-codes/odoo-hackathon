@@ -57,7 +57,7 @@ export function ItineraryView() {
             <span className="hidden sm:inline">Share</span>
           </button>
           <Link
-            to={`/trip/${tripId}/builder`}
+            to={`/app/trip/${tripId}/builder`}
             className="px-4 py-2 bg-gradient-to-r from-[#2563EB] to-[#06B6D4] text-white rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all flex items-center gap-2"
           >
             <Edit className="w-4 h-4" />

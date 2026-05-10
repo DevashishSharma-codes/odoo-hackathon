@@ -83,7 +83,7 @@ export function MyTrips() {
           <p className="text-gray-600">Manage and organize all your travel plans</p>
         </div>
         <Link
-          to="/create-trip"
+          to="/app/create-trip"
           className="flex items-center gap-2 bg-gradient-to-r from-[#2563EB] to-[#06B6D4] text-white px-6 py-3 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
         >
           <Plus className="w-5 h-5" />
@@ -175,14 +175,14 @@ export function MyTrips() {
               {/* Action Buttons */}
               <div className="grid grid-cols-4 gap-2">
                 <Link
-                  to={`/trip/${trip.id}/view`}
+                  to={`/app/trip/${trip.id}/view`}
                   className="flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 text-[#2563EB] rounded-lg hover:bg-blue-100 transition-colors"
                   title="View"
                 >
                   <Eye className="w-4 h-4" />
                 </Link>
                 <Link
-                  to={`/trip/${trip.id}/builder`}
+                  to={`/app/trip/${trip.id}/builder`}
                   className="flex items-center justify-center gap-1 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
                   title="Edit"
                 >
