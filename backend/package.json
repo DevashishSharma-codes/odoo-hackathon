@@ -6,24 +6,26 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "prisma:generate": "prisma generate",
-    "prisma:dbpush": "prisma db push",
+    "migrate": "node scripts/migrate.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
-    "@prisma/client": "^7.8.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "mysql2": "^3.14.0",
+    "odoo-hackathon": "file:.."
   },
   "devDependencies": {
-    "prisma": "^7.8.0"
+    "@types/node": "^25.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
   }
 }

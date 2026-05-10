@@ -1,6 +1,6 @@
-const express = require('express');
-const { getPrisma } = require('../prisma');
-const { toCityDto } = require('../utils/dto');
+import express from 'express';
+import { getMany, getOne } from '../db.js';
+import { toCityDto } from '../utils/dto.js';
 
 const router = express.Router();
 
@@ -8,27 +8,34 @@ router.get('/', async (req, res, next) => {
   try {
     const { search, country, region } = req.query;
 
-    const where = {};
-    if (country) where.country = { contains: String(country) };
-    if (region && String(region) !== 'all') where.region = String(region);
+    const conditions = [];
+    const params = [];
+
+    if (country) {
+      conditions.push('c.country LIKE ?');
+      params.push(`%${country}%`);
+    }
+    if (region && String(region) !== 'all') {
+      conditions.push('c.region = ?');
+      params.push(String(region));
+    }
     if (search) {
-      where.OR = [
-        { name: { contains: String(search) } },
-        { country: { contains: String(search) } },
-      ];
+      conditions.push('(c.name LIKE ? OR c.country LIKE ?)');
+      params.push(`%${search}%`, `%${search}%`);
     }
 
-    const prisma = getPrisma();
-    const cities = await prisma.cities.findMany({
-      where,
-      orderBy: [{ popularity_score: 'desc' }, { name: 'asc' }],
-      take: 200,
-      include: {
-        _count: { select: { activities: true } },
-      },
-    });
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    return res.json({ cities: cities.map(toCityDto) });
+    const cities = await getMany(
+      `SELECT c.*, (SELECT COUNT(*) FROM activities WHERE city_id = c.id) as activity_count
+       FROM cities c
+       ${where}
+       ORDER BY c.popularity_score DESC, c.name ASC
+       LIMIT 200`,
+      params
+    );
+
+    return res.json({ cities: cities.map(c => toCityDto({ ...c, _count: { activities: Number(c.activity_count) } })) });
   } catch (err) {
     return next(err);
   }
@@ -37,16 +44,16 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const id = Number(req.params.id);
-    const prisma = getPrisma();
-    const city = await prisma.cities.findUnique({
-      where: { id },
-      include: { _count: { select: { activities: true } } },
-    });
+    const city = await getOne(
+      `SELECT c.*, (SELECT COUNT(*) FROM activities WHERE city_id = c.id) as activity_count
+       FROM cities c WHERE c.id = ?`,
+      [id]
+    );
     if (!city) return res.status(404).json({ error: 'City not found' });
-    return res.json({ city: toCityDto(city) });
+    return res.json({ city: toCityDto({ ...city, _count: { activities: Number(city.activity_count) } }) });
   } catch (err) {
     return next(err);
   }
 });
 
-module.exports = router;
+export default router;

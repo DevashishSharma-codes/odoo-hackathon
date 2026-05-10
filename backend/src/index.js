@@ -1,6 +1,6 @@
-require('dotenv').config();
+import 'dotenv/config';
 
-const { createApp } = require('./app');
+import { createApp } from './app.js';
 
 if (!process.env.DATABASE_URL) {
   // eslint-disable-next-line no-console

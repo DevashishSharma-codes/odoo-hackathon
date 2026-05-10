@@ -1,17 +1,17 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
 
-const authRoutes = require('./routes/auth');
-const cityRoutes = require('./routes/cities');
-const activityRoutes = require('./routes/activities');
-const tripRoutes = require('./routes/trips');
-const shareRoutes = require('./routes/share');
-const adminRoutes = require('./routes/admin');
-const profileRoutes = require('./routes/profile');
-const { notFound, errorHandler } = require('./middleware/error');
+import authRoutes from './routes/auth.js';
+import cityRoutes from './routes/cities.js';
+import activityRoutes from './routes/activities.js';
+import tripRoutes from './routes/trips.js';
+import shareRoutes from './routes/share.js';
+import adminRoutes from './routes/admin.js';
+import profileRoutes from './routes/profile.js';
+import { notFound, errorHandler } from './middleware/error.js';
 
-function createApp() {
+export function createApp() {
   const app = express();
 
   const corsOrigin = process.env.CORS_ORIGIN || true;
@@ -33,7 +33,3 @@ function createApp() {
   app.use(errorHandler);
   return app;
 }
-
-module.exports = {
-  createApp,
-};

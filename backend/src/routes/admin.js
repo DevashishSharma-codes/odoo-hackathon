@@ -1,6 +1,6 @@
-const express = require('express');
-const { getPrisma } = require('../prisma');
-const { requireAuth, requireAdmin } = require('../middleware/auth');
+import express from 'express';
+import { getMany, getOne } from '../db.js';
+import { requireAuth, requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -9,14 +9,18 @@ router.use(requireAdmin);
 
 router.get('/summary', async (req, res, next) => {
   try {
-    const prisma = getPrisma();
     const [users, trips, cities, activities] = await Promise.all([
-      prisma.users.count(),
-      prisma.trips.count(),
-      prisma.cities.count(),
-      prisma.activities.count(),
+      getOne('SELECT COUNT(*) as c FROM users'),
+      getOne('SELECT COUNT(*) as c FROM trips'),
+      getOne('SELECT COUNT(*) as c FROM cities'),
+      getOne('SELECT COUNT(*) as c FROM activities'),
     ]);
-    return res.json({ users, trips, cities, activities });
+    return res.json({
+      users: Number(users.c),
+      trips: Number(trips.c),
+      cities: Number(cities.c),
+      activities: Number(activities.c),
+    });
   } catch (err) {
     return next(err);
   }
@@ -24,16 +28,23 @@ router.get('/summary', async (req, res, next) => {
 
 router.get('/logs', async (req, res, next) => {
   try {
-    const prisma = getPrisma();
-    const logs = await prisma.admin_logs.findMany({
-      orderBy: [{ created_at: 'desc' }],
-      take: 100,
-      include: { users: { select: { id: true, name: true, email: true } } },
+    const logs = await getMany(
+      `SELECT al.*, u.id as user_id_join, u.name as user_name, u.email as user_email
+       FROM admin_logs al
+       LEFT JOIN users u ON al.user_id = u.id
+       ORDER BY al.created_at DESC
+       LIMIT 100`,
+      []
+    );
+    return res.json({
+      logs: logs.map(l => ({
+        ...l,
+        users: l.user_id_join ? { id: l.user_id_join, name: l.user_name, email: l.user_email } : null,
+      })),
     });
-    return res.json({ logs });
   } catch (err) {
     return next(err);
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,11 +1,11 @@
-function parseDateOnly(value) {
+export function parseDateOnly(value) {
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
   return date;
 }
 
-function parseOptionalBoolean(value) {
+export function parseOptionalBoolean(value) {
   if (value === undefined) return undefined;
   if (value === true || value === false) return value;
   if (value === 1 || value === 0) return Boolean(value);
@@ -16,7 +16,7 @@ function parseOptionalBoolean(value) {
   return undefined;
 }
 
-function parseTimeHHMM(value) {
+export function parseTimeHHMM(value) {
   if (!value) return null;
   if (typeof value !== 'string') return null;
   const match = value.match(/^(\d{2}):(\d{2})$/);
@@ -27,9 +27,3 @@ function parseTimeHHMM(value) {
   // Prisma maps MySQL TIME to Date; use a stable date.
   return new Date(Date.UTC(1970, 0, 1, hh, mm, 0));
 }
-
-module.exports = {
-  parseDateOnly,
-  parseOptionalBoolean,
-  parseTimeHHMM,
-};

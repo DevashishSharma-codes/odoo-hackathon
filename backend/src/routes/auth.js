@@ -1,9 +1,9 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { getPrisma } = require('../prisma');
-const { toUserDto } = require('../utils/dto');
-const { requireAuth } = require('../middleware/auth');
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { getOne, run } from '../db.js';
+import { toUserDto } from '../utils/dto.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -26,18 +26,15 @@ router.post('/signup', async (req, res, next) => {
       return res.status(400).json({ error: 'name, email, password are required' });
     }
 
-    const prisma = getPrisma();
-    const existing = await prisma.users.findUnique({ where: { email } });
+    const existing = await getOne('SELECT * FROM users WHERE email = ?', [email]);
     if (existing) return res.status(409).json({ error: 'Email already in use' });
 
     const password_hash = await bcrypt.hash(password, 10);
-    const user = await prisma.users.create({
-      data: {
-        name,
-        email,
-        password_hash,
-      },
-    });
+    const result = await run(
+      'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)',
+      [name, email, password_hash]
+    );
+    const user = await getOne('SELECT * FROM users WHERE id = ?', [result.insertId]);
 
     const token = signToken(user);
     return res.status(201).json({ token, user: toUserDto(user) });
@@ -53,8 +50,7 @@ router.post('/login', async (req, res, next) => {
       return res.status(400).json({ error: 'email, password are required' });
     }
 
-    const prisma = getPrisma();
-    const user = await prisma.users.findUnique({ where: { email } });
+    const user = await getOne('SELECT * FROM users WHERE email = ?', [email]);
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
     const ok = await bcrypt.compare(password, user.password_hash);
@@ -69,8 +65,7 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/me', requireAuth, async (req, res, next) => {
   try {
-    const prisma = getPrisma();
-    const user = await prisma.users.findUnique({ where: { id: Number(req.user.id) } });
+    const user = await getOne('SELECT * FROM users WHERE id = ?', [Number(req.user.id)]);
     if (!user) return res.status(404).json({ error: 'User not found' });
     return res.json({ user: toUserDto(user) });
   } catch (err) {
@@ -78,4 +73,4 @@ router.get('/me', requireAuth, async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

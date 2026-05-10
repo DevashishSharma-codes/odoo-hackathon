@@ -1,4 +1,4 @@
-function decimalToNumber(value) {
+export function decimalToNumber(value) {
   if (value == null) return value;
   if (typeof value === 'number') return value;
   if (typeof value === 'string') return Number(value);
@@ -6,7 +6,13 @@ function decimalToNumber(value) {
   return Number(value);
 }
 
-function toUserDto(user) {
+export function asBool(value) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value === 1;
+  return Boolean(value);
+}
+
+export function toUserDto(user) {
   return {
     id: user.id,
     name: user.name,
@@ -19,7 +25,7 @@ function toUserDto(user) {
   };
 }
 
-function toCityDto(city) {
+export function toCityDto(city) {
   return {
     id: city.id,
     name: city.name,
@@ -33,7 +39,7 @@ function toCityDto(city) {
   };
 }
 
-function toActivityDto(activity) {
+export function toActivityDto(activity) {
   return {
     id: activity.id,
     cityId: activity.city_id,
@@ -57,26 +63,31 @@ function toActivityDto(activity) {
 
 function timeToHHMM(value) {
   if (!value) return null;
+  if (typeof value === 'string') {
+    const parts = value.split(':');
+    if (parts.length >= 2) return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
+    return null;
+  }
   if (!(value instanceof Date)) return null;
   const hh = String(value.getHours()).padStart(2, '0');
   const mm = String(value.getMinutes()).padStart(2, '0');
   return `${hh}:${mm}`;
 }
 
-function toStopActivityDto(sa) {
+export function toStopActivityDto(sa) {
   return {
     id: sa.id,
     stopId: sa.stop_id,
     activityId: sa.activity_id,
     scheduledTime: timeToHHMM(sa.scheduled_time),
     actualCost: decimalToNumber(sa.actual_cost),
-    isCompleted: sa.is_completed,
+    isCompleted: asBool(sa.is_completed),
     createdAt: sa.created_at,
     activity: sa.activities ? toActivityDto(sa.activities) : undefined,
   };
 }
 
-function toStopDto(stop) {
+export function toStopDto(stop) {
   return {
     id: stop.id,
     tripId: stop.trip_id,
@@ -97,7 +108,7 @@ function toStopDto(stop) {
   };
 }
 
-function toBudgetDto(budget) {
+export function toBudgetDto(budget) {
   if (!budget) return null;
   return {
     id: budget.id,
@@ -112,7 +123,7 @@ function toBudgetDto(budget) {
   };
 }
 
-function toTripDto(trip) {
+export function toTripDto(trip) {
   return {
     id: trip.id,
     userId: trip.user_id,
@@ -122,7 +133,7 @@ function toTripDto(trip) {
     startDate: trip.start_date,
     endDate: trip.end_date,
     status: trip.status,
-    isPublic: trip.is_public,
+    isPublic: asBool(trip.is_public),
     createdAt: trip.created_at,
     updatedAt: trip.updated_at,
     budget: trip.budgets ? toBudgetDto(trip.budgets) : undefined,
@@ -130,18 +141,18 @@ function toTripDto(trip) {
   };
 }
 
-function toPackingItemDto(item) {
+export function toPackingItemDto(item) {
   return {
     id: item.id,
     tripId: item.trip_id,
     itemName: item.item_name,
     category: item.category,
-    isPacked: item.is_packed,
+    isPacked: asBool(item.is_packed),
     createdAt: item.created_at,
   };
 }
 
-function toNoteDto(note) {
+export function toNoteDto(note) {
   return {
     id: note.id,
     tripId: note.trip_id,
@@ -151,16 +162,3 @@ function toNoteDto(note) {
     updatedAt: note.updated_at,
   };
 }
-
-module.exports = {
-  decimalToNumber,
-  toUserDto,
-  toCityDto,
-  toActivityDto,
-  toTripDto,
-  toStopDto,
-  toStopActivityDto,
-  toBudgetDto,
-  toPackingItemDto,
-  toNoteDto,
-};

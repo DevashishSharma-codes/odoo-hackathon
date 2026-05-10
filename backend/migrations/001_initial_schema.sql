@@ -1,13 +1,6 @@
 -- =============================================================
 --  Traveloop – Database Schema
---  Run: mysql -u root -p < traveloop_schema.sql
 -- =============================================================
-
-CREATE DATABASE IF NOT EXISTS traveloop
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE traveloop;
 
 -- =============================================================
 -- 1. USERS
@@ -248,14 +241,10 @@ CREATE TABLE admin_logs (
 -- =============================================================
 -- TRIGGER – auto-create budget row when a trip is inserted
 -- =============================================================
-DELIMITER $$
 CREATE TRIGGER trg_create_budget_on_trip
 AFTER INSERT ON trips
 FOR EACH ROW
-BEGIN
   INSERT INTO budgets (trip_id) VALUES (NEW.id);
-END$$
-DELIMITER ;
 
 -- =============================================================
 -- VIEWS
